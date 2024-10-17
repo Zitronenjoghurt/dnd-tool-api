@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from database import MongoDB
 from routes import ping
 
 app = FastAPI(

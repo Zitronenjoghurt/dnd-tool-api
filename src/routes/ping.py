@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-
 from models.responses.message_response import MessageResponse
 
 router = APIRouter(prefix="/ping")

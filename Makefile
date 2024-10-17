@@ -23,4 +23,3 @@ logs-dev:
 
 logs-prod:
 	docker compose -f docker-compose.prod.yml logs -f
-	docker compose up -d
