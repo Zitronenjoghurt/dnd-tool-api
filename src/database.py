@@ -1,10 +1,9 @@
 import os
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from urllib.parse import quote_plus
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo.synchronous.collection import Collection
 
-from models.mongo_base_entity import MongoBaseEntity
+from models.entities.mongo_base_entity import MongoBaseEntity
 
 class MongoDB:
     _instance = None
@@ -39,8 +38,36 @@ class MongoDB:
 
         return f"mongodb://{auth}{self.hostname}:{self.port}/{self.database_name}?{'&'.join(options)}"
 
-    async def save(self, item: MongoBaseEntity) -> MongoBaseEntity:
-        collection = self.async_db[item.collection_name()]
-        result = await collection.insert_one(item.to_dict())
-        item.id = result.inserted_id
+    async def save(self, collection_name: str, item: Dict[str, Any]) -> Dict[str, Any]:
+        collection = self.async_db[collection_name]
+        if '_id' in item and item['_id']:
+            # Update existing document
+            await collection.update_one({'_id': item['_id']}, {'$set': item})
+        else:
+            # Insert new document
+            result = await collection.insert_one(item)
+            item['_id'] = result.inserted_id
         return item
+
+    async def find(
+        self,
+        collection_name: str,
+        filter: Optional[dict] = None,
+        sort_key: Optional[str] = None,
+        limit: Optional[int] = None,
+        skip: Optional[int] = None
+    ) -> List[dict]:
+        collection = self.async_db[collection_name]
+
+        query = collection.find(filter or {})
+
+        if sort_key:
+            query = query.sort(sort_key)
+
+        if skip is not None:
+            query = query.skip(skip)
+
+        if limit is not None:
+            query = query.limit(limit)
+
+        return await query.to_list(length=None)
