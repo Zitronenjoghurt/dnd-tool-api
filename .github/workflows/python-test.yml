@@ -1,0 +1,29 @@
+name: Python Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Build and start containers
+      run: make dev-up
+    
+    - name: Run tests
+      run: docker compose -f docker-compose.dev.yml exec -T app python -m pytest tests/
+    
+    - name: Tear down containers
+      run: make clean
