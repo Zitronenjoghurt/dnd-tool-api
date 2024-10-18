@@ -6,7 +6,8 @@ from bson import ObjectId
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from exceptions.credentials_exception import CredentialsException
+from constants.error_codes import ErrorCode
+from exceptions.unauthorized_exception import UnauthorizedException
 from models.entities.user import User
 from repositories.user_repository import UserRepository
 from security.password import verify_password
@@ -39,12 +40,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("sub")
         if user_id is None:
-            raise CredentialsException()
+            raise UnauthorizedException(ErrorCode.TOKEN_INVALID)
     except jwt.ExpiredSignatureError:
-        raise CredentialsException("Token expired")
+        raise UnauthorizedException(ErrorCode.TOKEN_EXPIRED)
     except jwt.PyJWTError:
-        raise CredentialsException("Invalid token")
+        raise UnauthorizedException(ErrorCode.TOKEN_INVALID)
     user = await UserRepository().find_one_by_id(user_id)
     if user is None:
-        raise CredentialsException()
+        raise UnauthorizedException(ErrorCode.TOKEN_INVALID)
     return user

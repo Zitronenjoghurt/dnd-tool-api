@@ -1,6 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
+from constants.error_codes import ErrorCode
+from exceptions.bad_request_exception import BadRequestException
+from exceptions.unauthorized_exception import UnauthorizedException
 from models.entities.user import User
 from models.responses.token import Token
 from repositories.user_repository import UserRepository
@@ -13,19 +16,11 @@ router = APIRouter()
 async def register_user(username: str, email: str, password: str):
     existing_username = await UserRepository().find_one(username=username)
     if isinstance(existing_username, User):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already taken",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise BadRequestException(ErrorCode.USERNAME_TAKEN)
 
     existing_email = await UserRepository().find_one(email=email)
     if isinstance(existing_email, User):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="E-Mail already in use",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise BadRequestException(ErrorCode.EMAIL_TAKEN)
 
     new_user = User(
         username=username,
@@ -38,10 +33,6 @@ async def register_user(username: str, email: str, password: str):
 async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise UnauthorizedException(ErrorCode.INCORRECT_USERNAME_OR_PASSWORD)
     access_token = create_access_token(user.id)
     return Token(access_token=access_token, token_type="bearer")
