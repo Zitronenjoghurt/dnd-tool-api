@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4.2.1
     
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3.7.1
     
     - name: Build and start containers
       run: make dev-up
@@ -26,4 +26,4 @@ jobs:
       run: docker compose -f docker-compose.dev.yml exec -T app python -m pytest tests/
     
     - name: Tear down containers
-      run: make clean
+      run: make dev-clean

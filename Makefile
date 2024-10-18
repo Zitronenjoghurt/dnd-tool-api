@@ -4,6 +4,9 @@ dev-up:
 dev-down:
 	docker compose -f docker-compose.dev.yml down
 
+dev-clean:
+	docker compose -f docker-compose.dev.yml down -v --remove-orphans
+
 dev-restart: dev-down dev-up
 
 prod-up:
@@ -12,11 +15,12 @@ prod-up:
 prod-down:
 	docker compose -f docker-compose.prod.yml down
 
+prod-clean:
+	docker compose -f docker-compose.prod.yml down -v --remove-orphans
+
 prod-restart: prod-down prod-up
 
-clean:
-	docker compose -f docker-compose.dev.yml down -v --remove-orphans
-	docker compose -f docker-compose.prod.yml down -v --remove-orphans
+clean: dev-clean prod-clean
 
 logs-dev:
 	docker compose -f docker-compose.dev.yml logs -f
