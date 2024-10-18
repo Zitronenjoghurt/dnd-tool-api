@@ -29,6 +29,10 @@ class MongoDB:
             item['_id'] = result.inserted_id
         return item
 
+    async def create_unique_index(self, collection_name: str, field_name: str):
+        collection = self.db[collection_name]
+        await collection.create_index(field_name, unique=True)
+
     async def find(
         self,
         collection_name: str,
@@ -61,5 +65,5 @@ def build_connection_string() -> str:
 
 mongodb = MongoDB()
 
-def get_db():
+async def get_db():
     return mongodb

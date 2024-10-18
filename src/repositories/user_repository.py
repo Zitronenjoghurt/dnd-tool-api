@@ -10,5 +10,5 @@ class UserRepository(BaseRepository[User]):
     def __init__(self, db: MongoDB):
         super().__init__(User, db)
 
-def get_user_repo(db: MongoDB = Depends(get_db)):
+async def get_user_repo(db: MongoDB = Depends(get_db)):
     return UserRepository(db)

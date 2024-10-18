@@ -1,6 +1,6 @@
-from enum import EnumType, auto
+from enum import Enum
 
-class ErrorCode(EnumType):
+class ErrorCode(Enum):
     # Authentication
     INCORRECT_USERNAME_OR_PASSWORD = "INCORRECT_USERNAME_OR_PASSWORD"
     TOKEN_EXPIRED = "TOKEN_EXPIRED"

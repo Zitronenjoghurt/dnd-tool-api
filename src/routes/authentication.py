@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from constants.error_codes import ErrorCode
-from database import get_db, MongoDB
+from database import MongoDB, get_db
 from exceptions.bad_request_exception import BadRequestException
 from exceptions.unauthorized_exception import UnauthorizedException
 from models.entities.user import User
