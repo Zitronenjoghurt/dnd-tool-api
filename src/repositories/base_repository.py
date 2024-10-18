@@ -15,17 +15,17 @@ class BaseRepository(Generic[T]):
             cls._instances[cls] = super(BaseRepository, cls).__new__(cls)
         return cls._instances[cls]
 
-    def __init__(self, model_class: Type[T]):
+    def __init__(self, model_class: Type[T], db: MongoDB):
         if not hasattr(self, 'initialized'):
             self.model_class = model_class
-            self.db = MongoDB()
+            self.db = db
             self.collection_name = model_class.collection_name()
             self.initialized = True
 
     async def save(self, item: T) -> T:
         item_dict = item.to_dict()
         saved_dict = await self.db.save(self.collection_name, item_dict)
-        return self.model_class.parse_obj(saved_dict)
+        return self.model_class.model_validate(saved_dict)
 
     async def find(
         self,
@@ -41,7 +41,7 @@ class BaseRepository(Generic[T]):
             limit=limit,
             skip=skip
         )
-        return [self.model_class.parse_obj(result) for result in results]
+        return [self.model_class.model_validate(result) for result in results]
 
     async def find_one(self, **kwargs) -> Optional[T]:
         results = await self.find(**kwargs)
