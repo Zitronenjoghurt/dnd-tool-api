@@ -15,17 +15,18 @@ from security.password import hash_password
 
 router = APIRouter(tags=["Authentication"])
 
-@router.post("/register",
-            summary="Register with your credentials which you can then use to fetch a JWT access token",
-            response_description="Empty response",
-            status_code=status.HTTP_200_OK,
-            responses={401: {"model": RegistrationErrorResponse}}
+@router.post(
+    "/register",
+    summary="Register with your credentials which you can then use to fetch a JWT access token",
+    response_description="Empty response",
+    status_code=status.HTTP_200_OK,
+    responses={401: {"model": RegistrationErrorResponse}}
 )
 async def register_user(
-        username: str,
-        email: str,
-        password: str,
-        user_repo: UserRepository = Depends(get_user_repo)
+    username: str,
+    email: str,
+    password: str,
+    user_repo: UserRepository = Depends(get_user_repo)
 ):
     existing_username = await user_repo.find_one(username=username)
     if isinstance(existing_username, User):
@@ -42,15 +43,17 @@ async def register_user(
     )
     await user_repo.save(new_user)
 
-@router.post("/token",
-            summary="Login with your credentials to fetch a valid JWT token",
-            response_model=Token,
-            response_description="Your JWT token including the type of the token",
-            status_code=status.HTTP_200_OK,
-            responses={401: {"model": LoginErrorResponse}})
+@router.post(
+    "/token",
+    summary="Login with your credentials to fetch a valid JWT token",
+    response_model=Token,
+    response_description="Your JWT token including the type of the token",
+    status_code=status.HTTP_200_OK,
+    responses={401: {"model": LoginErrorResponse}}
+)
 async def login(
-        db: MongoDB = Depends(get_db),
-        form_data: OAuth2PasswordRequestForm = Depends()
+    db: MongoDB = Depends(get_db),
+    form_data: OAuth2PasswordRequestForm = Depends()
 ) -> Token:
     user = await authenticate_user(db, form_data.username, form_data.password)
     if not isinstance(user, User):
