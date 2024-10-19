@@ -8,8 +8,9 @@ router = APIRouter(prefix="/ping", tags=["Miscellaneous"])
 @router.get(
     "",
     summary="A simple ping endpoint for testing connection",
+    response_model=MessageResponse,
     response_description="A response saying 'Pong!'",
     status_code=status.HTTP_200_OK
 )
-async def ping() -> MessageResponse:
+async def ping():
     return MessageResponse.create("Pong!")

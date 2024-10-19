@@ -1,6 +1,6 @@
 import os
 
-from constants.global_permission_levels import GlobalPermissionLevel
+from constants.permissions import GlobalPermission
 from database import get_db
 from models.entities.user import User
 from repositories.user_repository import UserRepository
@@ -27,6 +27,7 @@ async def create_super_user():
         username=username,
         password_hash=password_hash,
         email='',
-        permission_level=GlobalPermissionLevel.SUPER_USER.value
+        registration_code=''
     )
+    user.add_global_permission(GlobalPermission.SUPER_USER)
     await user_repo.save(user)

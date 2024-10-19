@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Literal
 
 
-class ErrorCode(Enum):
+class ErrorCode(str, Enum):
     # Authentication
     TOKEN_EXPIRED = "TOKEN_EXPIRED"
     TOKEN_INVALID = "TOKEN_INVALID"
@@ -10,6 +10,9 @@ class ErrorCode(Enum):
 
     # Login
     INCORRECT_USERNAME_OR_PASSWORD = "INCORRECT_USERNAME_OR_PASSWORD"
+
+    # Permission
+    MISSING_PERMISSIONS = "MISSING_PERMISSIONS"
 
     # Registration
     EMAIL_TAKEN = "EMAIL_TAKEN"
@@ -23,6 +26,10 @@ AuthenticationErrorCode = Literal[
 
 LoginErrorCode = Literal[
     ErrorCode.INCORRECT_USERNAME_OR_PASSWORD,
+]
+
+PermissionErrorCode = Literal[
+    ErrorCode.MISSING_PERMISSIONS,
 ]
 
 RegistrationErrorCode = Literal[

@@ -10,3 +10,4 @@ async def test_get_me(client: AsyncClient, token_headers: dict):
     data = UserInfoPrivate.model_validate(response.json())
     assert data.username == settings.TEST_USERNAME
     assert data.email == settings.TEST_EMAIL
+    assert len(data.permissions) == 0

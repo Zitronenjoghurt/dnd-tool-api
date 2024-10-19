@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from docs.tags_metadata import tags_metadata
-from routes import authentication, ping, users
+from routes import authentication, ping, registration_code, users
 from setup.database_setup import setup_database
 from setup.super_user import create_super_user
 
@@ -25,6 +25,7 @@ app = FastAPI(
 
 app.include_router(authentication.router)
 app.include_router(ping.router)
+app.include_router(registration_code.router)
 app.include_router(users.router)
 
 async def setup():

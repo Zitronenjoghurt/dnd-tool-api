@@ -8,7 +8,7 @@ from fastapi import Depends
 from config import settings
 from constants.error_codes import ErrorCode
 from database import MongoDB, get_db
-from exceptions.unauthorized_exception import UnauthorizedException
+from errors.unauthorized_error import UnauthorizedError
 from models.entities.user import User
 from repositories.user_repository import UserRepository
 from security.password import verify_password
@@ -32,18 +32,18 @@ async def authenticate_user(db: MongoDB, username: str, password: str) -> Option
 
 async def get_current_user(db: MongoDB = Depends(get_db), token: str = Depends(settings.OAUTH2_SCHEME)) -> User:
     if not isinstance(token, str):
-        raise UnauthorizedException(ErrorCode.TOKEN_MISSING)
+        raise UnauthorizedError(ErrorCode.TOKEN_MISSING)
     try:
         payload = jwt.decode(token, settings.JWT_KEY, algorithms=[settings.JWT_ALGORITHM])
         user_id = payload.get("sub")
         if user_id is None:
-            raise UnauthorizedException(ErrorCode.TOKEN_INVALID)
+            raise UnauthorizedError(ErrorCode.TOKEN_INVALID)
     except jwt.ExpiredSignatureError:
-        raise UnauthorizedException(ErrorCode.TOKEN_EXPIRED)
+        raise UnauthorizedError(ErrorCode.TOKEN_EXPIRED)
     except jwt.PyJWTError:
-        raise UnauthorizedException(ErrorCode.TOKEN_INVALID)
+        raise UnauthorizedError(ErrorCode.TOKEN_INVALID)
 
     user = await UserRepository(db).find_one_by_id(user_id)
     if user is None:
-        raise UnauthorizedException(ErrorCode.TOKEN_INVALID)
+        raise UnauthorizedError(ErrorCode.TOKEN_INVALID)
     return user
