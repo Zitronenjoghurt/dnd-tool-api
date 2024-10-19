@@ -1,10 +1,12 @@
 import os
 
-from starlette.testclient import TestClient
+import pytest
+from httpx import AsyncClient
 from models.responses.user_info import UserInfoPrivate
 
-def test_super_user_exists(client: TestClient, super_user_token_headers: dict):
-    response = client.get("/users/me", headers=super_user_token_headers)
+@pytest.mark.asyncio
+async def test_super_user_exists(client: AsyncClient, super_user_token_headers: dict):
+    response = await client.get("/users/me", headers=super_user_token_headers)
     data = UserInfoPrivate.model_validate(response.json())
     assert data.username == os.getenv('SUPERUSER_NAME')
     assert data.email == ''

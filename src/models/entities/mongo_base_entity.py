@@ -10,7 +10,7 @@ class MongoBaseEntity(BaseModel):
         return cls.__name__.lower()
 
     def to_dict(self, **kwargs) -> Dict:
-        return self.model_dump(by_alias=True, exclude={'id'}, exclude_none=True, **kwargs)
+        return self.model_dump(by_alias=True, exclude_none=True, **kwargs)
 
     class Config:
         populate_by_name = True
