@@ -7,7 +7,7 @@ class Settings:
     JWT_ALGORITHM: str = "HS256"
     JWT_TOKEN_EXP_MINUTES: int = 60 * 24 * 7
     JWT_KEY: str = os.getenv('JWT_KEY')
-    OAUTH2_SCHEME: str = OAuth2PasswordBearer(tokenUrl="token")
+    OAUTH2_SCHEME: str = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
     # Database
     MONGO_HOSTNAME: str = os.getenv('MONGO_HOSTNAME')

@@ -7,6 +7,6 @@ class UnauthorizedException(HTTPException):
     def __init__(self, code: ErrorCode):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=code,
+            detail=code.value,
             headers={"WWW-Authenticate": "Bearer"},
         )

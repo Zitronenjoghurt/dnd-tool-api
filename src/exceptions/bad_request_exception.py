@@ -5,6 +5,6 @@ class BadRequestException(HTTPException):
     def __init__(self, code: ErrorCode):
         super().__init__(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=code,
+            detail=code.value,
             headers={"WWW-Authenticate": "Bearer"},
         )

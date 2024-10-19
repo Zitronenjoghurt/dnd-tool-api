@@ -31,6 +31,8 @@ async def authenticate_user(db: MongoDB, username: str, password: str) -> Option
     return user
 
 async def get_current_user(db: MongoDB = Depends(get_db), token: str = Depends(settings.OAUTH2_SCHEME)) -> User:
+    if not isinstance(token, str):
+        raise UnauthorizedException(ErrorCode.TOKEN_MISSING)
     try:
         payload = jwt.decode(token, settings.JWT_KEY, algorithms=[settings.JWT_ALGORITHM])
         user_id = payload.get("sub")
