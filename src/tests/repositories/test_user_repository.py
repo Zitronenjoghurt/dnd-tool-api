@@ -10,7 +10,7 @@ async def test_save_user() -> None:
     db = await get_db()
     user_repository = UserRepository(db)
 
-    user = User(username='test_save_user', email='test_save_user@example.com', password_hash='', registration_code='')
+    user = User(username='test_save_user', email='test_save_user@example.com', password_hash='', registration_code='test')
     await user_repository.save(user)
 
     user_retrieved = await user_repository.find_one(username='test_save_user')
