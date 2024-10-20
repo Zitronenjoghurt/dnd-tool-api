@@ -11,6 +11,7 @@ class ErrorCode(str, Enum):
     # Friend request
     ALREADY_FRIENDS = "ALREADY_FRIENDS"
     ALREADY_SENT_REQUEST = "ALREADY_SENT_REQUEST"
+    NO_FRIEND_REQUEST_FROM_USER = "NO_FRIEND_REQUEST_FROM_USER"
     UNABLE_TO_BEFRIEND = "UNABLE_TO_BEFRIEND"
 
     USER_NOT_FOUND = "USER_NOT_FOUND"
@@ -32,7 +33,13 @@ AuthenticationErrorCode = Literal[
     ErrorCode.TOKEN_MISSING
 ]
 
-FriendRequestErrorCode = Literal[
+FriendRequestAcceptErrorCode = Literal[
+    ErrorCode.ALREADY_FRIENDS,
+    ErrorCode.NO_FRIEND_REQUEST_FROM_USER,
+    ErrorCode.UNABLE_TO_BEFRIEND,
+]
+
+FriendRequestSendErrorCode = Literal[
     ErrorCode.ALREADY_FRIENDS,
     ErrorCode.ALREADY_SENT_REQUEST,
     ErrorCode.UNABLE_TO_BEFRIEND,

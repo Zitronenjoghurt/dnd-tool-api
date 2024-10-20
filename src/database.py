@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict, Any
 from urllib.parse import quote_plus
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from pymongo import MongoClient
 
 from config import settings
@@ -14,6 +14,9 @@ class MongoDB:
 
         self.client_sync = MongoClient(connection_string)
         self.db_sync = self.client_sync[settings.MONGO_DATABASE]
+
+    def get_collection(self, collection_name: str) -> AsyncIOMotorCollection:
+        return self.db[collection_name]
 
     def clear(self) -> None:
         collection_names = self.db_sync.list_collection_names()

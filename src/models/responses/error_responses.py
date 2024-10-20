@@ -19,8 +19,11 @@ class RegistrationErrorResponse(BaseModel):
 class GlobalPermissionErrorResponse(BaseModel):
     detail: GlobalPermissionErrorDetail
 
-class FriendRequestErrorResponse(BaseModel):
-    detail: FriendRequestErrorCode
+class FriendRequestSendErrorResponse(BaseModel):
+    detail: FriendRequestSendErrorCode
+
+class FriendRequestAcceptErrorResponse(BaseModel):
+    detail: FriendRequestAcceptErrorCode
 
 class UserNotFoundErrorResponse(BaseModel):
     detail: Literal[ErrorCode.USER_NOT_FOUND]

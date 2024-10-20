@@ -4,6 +4,10 @@ tags_metadata = [
         "description": "Authentication operations regarding registration and JWT token generation."
     },
     {
+        "name": "Friends",
+        "description": "Friendship operations about sending/fetching/accepting friend requests, etc."
+    },
+    {
         "name": "Miscellaneous",
         "description": "Miscellaneous operations which dont belong to any specific category."
     },

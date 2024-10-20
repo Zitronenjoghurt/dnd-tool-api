@@ -57,3 +57,9 @@ class User(MongoBaseEntity):
         if user.id in self.blocked_users:
             return True
         return False
+
+    def has_friend_request_from(self, user: 'User') -> bool:
+        return any(request.user_id == user.id for request in self.friend_requests)
+
+    def delete_friend_request_from(self, user: 'User'):
+        self.friend_requests = [request for request in self.friend_requests if request.user_id != user.id]
