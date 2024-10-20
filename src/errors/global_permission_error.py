@@ -14,6 +14,6 @@ class GlobalPermissionError(HTTPException):
     def __init__(self, permissions: List[GlobalPermission], code: PermissionErrorCode = ErrorCode.MISSING_PERMISSIONS):
         super().__init__(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=GlobalPermissionErrorDetail(error_code=code, permissions=permissions),
+            detail=GlobalPermissionErrorDetail(error_code=code, permissions=permissions).model_dump(),
             headers={"WWW-Authenticate": "Bearer"},
         )

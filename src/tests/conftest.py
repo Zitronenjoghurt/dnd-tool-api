@@ -41,18 +41,21 @@ async def super_user_token_headers(client: AsyncClient):
     return {"Authorization": f"Bearer {token.access_token}"}
 
 @pytest_asyncio.fixture
-async def token_headers(client: AsyncClient, super_user_token_headers: dict) -> dict:
+async def test_user_registration_code(client: AsyncClient, super_user_token_headers: dict) -> str:
     registration_code_response = await client.post("registration-code", params={"count": 1}, headers=super_user_token_headers)
     registration_codes = GeneratedRegistrationCodesResponse.model_validate(registration_code_response.json())
     assert len(registration_codes.codes) == 1
     code = registration_codes.codes[0]
     assert isinstance(code, str)
+    return code
 
+@pytest_asyncio.fixture
+async def token_headers(client: AsyncClient, super_user_token_headers: dict, test_user_registration_code: str) -> dict:
     register_data = {
         "email": settings.TEST_EMAIL,
         "username": settings.TEST_USERNAME,
         "password": settings.TEST_PASSWORD,
-        "registration_code": code,
+        "registration_code": test_user_registration_code,
     }
     register_response = await client.post("/register", params=register_data)
     assert register_response.status_code == status.HTTP_200_OK
