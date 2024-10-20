@@ -46,11 +46,16 @@ class MongoDB:
         filter: Optional[dict] = None,
         sort_key: Optional[str] = None,
         limit: Optional[int] = None,
-        skip: Optional[int] = None
+        skip: Optional[int] = None,
+        additional_filters: Optional[Dict[str, Any]] = None,
     ) -> List[dict]:
         collection = self.db[collection_name]
 
-        query = collection.find(filter or {})
+        combined_filter = filter or {}
+        if isinstance(additional_filters, dict):
+            combined_filter.update(additional_filters)
+
+        query = collection.find(combined_filter)
 
         if sort_key:
             query = query.sort(sort_key)

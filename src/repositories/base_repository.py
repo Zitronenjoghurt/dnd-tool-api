@@ -1,5 +1,5 @@
 import asyncio
-from typing import TypeVar, Generic, Type, Optional, List, Callable
+from typing import TypeVar, Generic, Type, Optional, List, Callable, Dict, Any
 
 from bson import ObjectId
 from pydantic import BaseModel
@@ -41,6 +41,7 @@ class BaseRepository(Generic[E]):
         sort_key: Optional[str] = None,
         limit: Optional[int] = None,
         skip: Optional[int] = None,
+        additional_filters: Optional[Dict[str, Any]] = None,
         **kwargs
     ) -> List[E]:
         results = await self.db.find(
@@ -48,7 +49,8 @@ class BaseRepository(Generic[E]):
             filter=kwargs,
             sort_key=sort_key,
             limit=limit,
-            skip=skip
+            skip=skip,
+            additional_filters=additional_filters
         )
         return [self.model_class.model_validate(result) for result in results if result is not None]
 
@@ -62,8 +64,8 @@ class BaseRepository(Generic[E]):
         entity_data = [data_transform(entity) for entity in entities]
         return PaginatedEntityResponse.create(query, total, entity_data)
 
-    async def find_one(self, **kwargs) -> Optional[E]:
-        results = await self.find(**kwargs)
+    async def find_one(self, additional_filters: Optional[Dict[str, Any]] = None, **kwargs) -> Optional[E]:
+        results = await self.find(additional_filters=additional_filters, **kwargs)
         if len(results) == 0:
             return None
         return results[0]

@@ -11,7 +11,7 @@ from models.entities.user import User
 class RegistrationCode(MongoBaseEntity):
     code: str
     created_by: Optional[ObjectId] = None
-    created_at: datetime = datetime.datetime.now()
+    created_at: datetime.datetime = datetime.datetime.now()
     used: bool = False
 
     @staticmethod

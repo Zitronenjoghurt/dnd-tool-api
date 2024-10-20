@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from starlette import status
 
 from models.entities.user import User
-from models.responses.error_response import AuthenticationErrorResponse
+from models.responses.error_responses import AuthenticationErrorResponse
 from models.responses.user_info import UserInfoPrivate
 from security.authentication import get_current_user
 

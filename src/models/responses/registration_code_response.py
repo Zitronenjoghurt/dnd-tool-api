@@ -7,7 +7,7 @@ from models.entities.registration_code import RegistrationCode
 
 class RegistrationCodeResponse(BaseModel):
     code: str
-    created_at: datetime
+    created_at: datetime.datetime
     used: bool
 
     class Config:

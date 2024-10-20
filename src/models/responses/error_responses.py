@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from constants.error_codes import ErrorCode, AuthenticationErrorCode, RegistrationErrorCode, LoginErrorCode
+from constants.error_codes import *
 from errors.global_permission_error import GlobalPermissionErrorDetail
 
 
@@ -18,3 +18,9 @@ class RegistrationErrorResponse(BaseModel):
 
 class GlobalPermissionErrorResponse(BaseModel):
     detail: GlobalPermissionErrorDetail
+
+class FriendRequestErrorResponse(BaseModel):
+    detail: FriendRequestErrorCode
+
+class UserNotFoundErrorResponse(BaseModel):
+    detail: Literal[ErrorCode.USER_NOT_FOUND]

@@ -10,7 +10,7 @@ from constants.permissions import GlobalPermission
 from models.entities.registration_code import RegistrationCode
 from models.entities.user import User
 from models.queries.registration_code_query import RegistrationCodeQuery
-from models.responses.error_response import AuthenticationErrorResponse, GlobalPermissionErrorResponse
+from models.responses.error_responses import AuthenticationErrorResponse, GlobalPermissionErrorResponse
 from models.responses.generated_registration_codes_response import GeneratedRegistrationCodesResponse
 from models.responses.paginated_entity_response import PaginatedEntityResponse
 from models.responses.registration_code_response import RegistrationCodeResponse

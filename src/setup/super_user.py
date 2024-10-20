@@ -17,7 +17,7 @@ async def create_super_user():
 
     db = await get_db()
     user_repo = UserRepository(db)
-    existing_user = await user_repo.find_one(username=username)
+    existing_user = await user_repo.find_by_username(username)
     if isinstance(existing_user, User):
         if not verify_password(password, existing_user.password_hash):
             raise RuntimeError('Super user password has changed')
@@ -27,7 +27,8 @@ async def create_super_user():
         username=username,
         password_hash=password_hash,
         email='',
-        registration_code=''
+        registration_code='',
+        accepts_friend_requests=False
     )
     user.add_global_permission(GlobalPermission.SUPER_USER)
     await user_repo.save(user)

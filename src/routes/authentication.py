@@ -8,7 +8,7 @@ from errors.bad_request_error import BadRequestError
 from errors.unauthorized_error import UnauthorizedError
 from models.entities.registration_code import RegistrationCode
 from models.entities.user import User
-from models.responses.error_response import LoginErrorResponse, RegistrationErrorResponse
+from models.responses.error_responses import LoginErrorResponse, RegistrationErrorResponse
 from models.responses.token import Token
 from repositories.registration_code_repository import RegistrationCodeRepository, get_registration_code_repo
 from repositories.user_repository import UserRepository, get_user_repo
@@ -22,7 +22,7 @@ router = APIRouter(tags=["Authentication"])
     summary="Register with your credentials which you can then use to fetch a JWT access token",
     response_description="Empty response",
     status_code=status.HTTP_200_OK,
-    responses={401: {"model": RegistrationErrorResponse}}
+    responses={400: {"model": RegistrationErrorResponse}}
 )
 async def register_user(
     username: str,
@@ -36,7 +36,7 @@ async def register_user(
     if not isinstance(valid_registration_code, RegistrationCode):
         raise BadRequestError(ErrorCode.INVALID_REGISTRATION_CODE)
 
-    existing_username = await user_repo.find_one(username=username)
+    existing_username = await user_repo.find_by_username(username)
     if isinstance(existing_username, User):
         raise BadRequestError(ErrorCode.USERNAME_TAKEN)
 
