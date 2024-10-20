@@ -16,6 +16,7 @@ class ErrorCode(str, Enum):
 
     # Registration
     EMAIL_TAKEN = "EMAIL_TAKEN"
+    INVALID_REGISTRATION_CODE = "INVALID_REGISTRATION_CODE"
     USERNAME_TAKEN = "USERNAME_TAKEN"
 
 AuthenticationErrorCode = Literal[
@@ -34,5 +35,6 @@ PermissionErrorCode = Literal[
 
 RegistrationErrorCode = Literal[
     ErrorCode.EMAIL_TAKEN,
+    ErrorCode.INVALID_REGISTRATION_CODE,
     ErrorCode.USERNAME_TAKEN
 ]

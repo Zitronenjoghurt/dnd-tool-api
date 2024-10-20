@@ -1,3 +1,4 @@
+import asyncio
 from typing import TypeVar, Generic, Type, Optional, List, Callable
 
 from bson import ObjectId
@@ -31,6 +32,10 @@ class BaseRepository(Generic[E]):
         saved_dict = await self.db.save(self.collection_name, item_dict)
         return self.model_class.model_validate(saved_dict)
 
+    async def save_many(self, items: List[E]) -> List[E]:
+        save_tasks = [self.save(item) for item in items]
+        return await asyncio.gather(*save_tasks)
+
     async def find(
         self,
         sort_key: Optional[str] = None,
@@ -47,13 +52,15 @@ class BaseRepository(Generic[E]):
         )
         return [self.model_class.model_validate(result) for result in results if result is not None]
 
-    async def find_paginated(self, query: PaginationQuery, data_transform: Callable[[E], T]) -> PaginatedEntityResponse[T]:
+    async def find_paginated(self, query: PaginationQuery, data_transform: Callable[[E], T], **kwargs) -> PaginatedEntityResponse[T]:
         entities = await self.find(
             limit=query.limit,
             skip=query.skip,
+            **kwargs
         )
+        total = await self.count(**kwargs)
         entity_data = [data_transform(entity) for entity in entities]
-        return PaginatedEntityResponse(entities=entity_data, page=query.page, limit=query.limit)
+        return PaginatedEntityResponse.create(query, total, entity_data)
 
     async def find_one(self, **kwargs) -> Optional[E]:
         results = await self.find(**kwargs)
@@ -63,3 +70,6 @@ class BaseRepository(Generic[E]):
 
     async def find_one_by_id(self, entity_id: str) -> Optional[E]:
         return await self.find_one(_id=ObjectId(entity_id))
+
+    async def count(self, **kwargs) -> int:
+        return await self.db.count(self.collection_name, kwargs)

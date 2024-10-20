@@ -6,9 +6,11 @@ from constants.error_codes import ErrorCode
 from database import MongoDB, get_db
 from errors.bad_request_error import BadRequestError
 from errors.unauthorized_error import UnauthorizedError
+from models.entities.registration_code import RegistrationCode
 from models.entities.user import User
 from models.responses.error_response import LoginErrorResponse, RegistrationErrorResponse
 from models.responses.token import Token
+from repositories.registration_code_repository import RegistrationCodeRepository, get_registration_code_repo
 from repositories.user_repository import UserRepository, get_user_repo
 from security.authentication import authenticate_user, create_access_token
 from security.password import hash_password
@@ -26,8 +28,14 @@ async def register_user(
     username: str,
     email: str,
     password: str,
-    user_repo: UserRepository = Depends(get_user_repo)
+    registration_code: str,
+    user_repo: UserRepository = Depends(get_user_repo),
+    registration_code_repo: RegistrationCodeRepository = Depends(get_registration_code_repo),
 ):
+    valid_registration_code = await registration_code_repo.fetch_valid_code(code=registration_code)
+    if not isinstance(valid_registration_code, RegistrationCode):
+        raise BadRequestError(ErrorCode.INVALID_REGISTRATION_CODE)
+
     existing_username = await user_repo.find_one(username=username)
     if isinstance(existing_username, User):
         raise BadRequestError(ErrorCode.USERNAME_TAKEN)
@@ -36,12 +44,14 @@ async def register_user(
     if isinstance(existing_email, User):
         raise BadRequestError(ErrorCode.EMAIL_TAKEN)
 
+    valid_registration_code.used = True
+    await registration_code_repo.save(valid_registration_code)
+
     new_user = User(
         username=username,
         email=email,
         password_hash=hash_password(password),
-        # ToDo: Take in a registration code and put it here
-        registration_code=''
+        registration_code=valid_registration_code.code
     )
     await user_repo.save(new_user)
 

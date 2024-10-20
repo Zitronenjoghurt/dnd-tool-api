@@ -17,6 +17,10 @@ class Settings:
     MONGO_USERNAME: str = os.getenv('MONGO_USERNAME')
     MONGO_PASSWORD: str = os.getenv('MONGO_PASSWORD')
 
+    # Registration Codes
+    # How many registration codes can be created at once
+    REGISTRATION_CODE_GENERATION_MAX_COUNT: int = 100
+
     # Testing
     TEST_EMAIL: str = "test@example.com"
     TEST_USERNAME: str = "test_user"

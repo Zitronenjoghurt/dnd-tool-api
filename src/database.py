@@ -33,6 +33,13 @@ class MongoDB:
         collection = self.db[collection_name]
         await collection.create_index(field_name, unique=True)
 
+    async def count(self, collection_name: str, filter: Optional[dict] = None) -> int:
+        collection = self.db[collection_name]
+        if filter is None:
+            return await collection.estimated_document_count()
+        else:
+            return await collection.count_documents(filter or {})
+
     async def find(
         self,
         collection_name: str,

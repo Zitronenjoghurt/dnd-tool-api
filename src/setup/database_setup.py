@@ -10,6 +10,5 @@ async def setup_database():
 async def create_unique_keys(db: MongoDB):
     await db.create_unique_index(User.collection_name(), 'username')
     await db.create_unique_index(User.collection_name(), 'email')
-    # ToDo: Uncomment after proper registration code registration implementation
-    #await db.create_unique_index(User.collection_name(), 'registration_code')
+    await db.create_unique_index(User.collection_name(), 'registration_code')
     await db.create_unique_index(RegistrationCode.collection_name(), 'code')
